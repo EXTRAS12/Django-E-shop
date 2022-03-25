@@ -1,0 +1,5 @@
+.idea
+venv
+django_cache
+shopConfig/media/
+db.sqlite3
