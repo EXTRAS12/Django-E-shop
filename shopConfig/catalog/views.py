@@ -1,9 +1,10 @@
 from django.shortcuts import render
 from .forms import SubForm
+from .models import *
 from django.views.generic import DetailView, ListView
 
 
-def home(request):
+def landing(request):
     name = "EXTRA"
     form = SubForm(request.POST or None)
 
@@ -15,4 +16,17 @@ def home(request):
 
         new_form = form.save()
 
-    return render(request, 'base.html', locals())
+    return render(request, 'landing.html', locals())
+
+
+def home(request):
+    products_images = ProductImage.objects.filter(is_active=True, is_main=True,
+                                                  product__is_active=True)
+    products_images_phones = products_images.filter(product__category__id=1)
+    products_images_laptops = products_images.filter(product__category__id=2)
+    return render(request, 'home.html', locals())
+
+
+def product(request, product_id):
+    product = Product.objects.get(id=product_id)
+    return render(request, 'product.html', locals())

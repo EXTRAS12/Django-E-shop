@@ -14,40 +14,26 @@ class Subscriber(models.Model):
         verbose_name_plural = 'Подписчики'
 
 
-class Status(models.Model):
-    name = models.CharField(max_length=24, blank=True, null=True, default=True)
+class ProductCategory(models.Model):
+    name = models.CharField(max_length=64, blank=True, null=True, default=None)
     is_active = models.BooleanField(default=True)
-    created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    update = models.DateTimeField(auto_now=True, auto_now_add=False)
 
     def __str__(self):
-        return "Статус %s" % self.name
+        return self.name
 
     class Meta:
-        verbose_name = 'Статус'
-        verbose_name_plural = 'Статус заказа'
-
-
-class Order(models.Model):
-    customer_name = models.CharField(max_length=128, blank=True, null=True, default=None)
-    customer_email = models.EmailField(blank=True, null=True, default=None)
-    customer_phone = models.CharField(max_length=16, blank=True, null=True, default=None)
-    comments = models.TextField(blank=True, null=True, default=None)
-    status = models.ForeignKey(Status, on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    update = models.DateTimeField(auto_now=True, auto_now_add=False)
-
-    def __str__(self):
-        return "Заказ %s %s" % (self.pk, self.status.name)
-
-    class Meta:
-        verbose_name = 'Заказ'
-        verbose_name_plural = 'Заказы'
+        verbose_name = 'Категория товара'
+        verbose_name_plural = 'Категории товаров'
 
 
 class Product(models.Model):
     name = models.CharField(max_length=128, blank=True, null=True, default=None)
+    price = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    discount = models.IntegerField(default=0)
+    category = models.ForeignKey(ProductCategory, blank=True, null=True, default=None,
+                                 on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True, default=None)
+    short_description = models.TextField(blank=True, null=True, default=None)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     update = models.DateTimeField(auto_now=True, auto_now_add=False)
@@ -64,6 +50,7 @@ class ProductImage(models.Model):
     product = models.ForeignKey(Product, blank=True, null=True, default=True,
                                 on_delete=models.CASCADE)
     image = models.ImageField(upload_to='media/%Y/%m/%d/', verbose_name='Фото товара', blank=True)
+    is_main = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True, auto_now=False)
     update = models.DateTimeField(auto_now=True, auto_now_add=False)
@@ -74,20 +61,3 @@ class ProductImage(models.Model):
     class Meta:
         verbose_name = 'Фотография'
         verbose_name_plural = 'Фотографии'
-
-
-class ProductInOrder(models.Model):
-    order = models.ForeignKey(Order,
-                              on_delete=models.CASCADE, blank=True, null=True, default=None)
-    product = models.ForeignKey(Product,
-                                on_delete=models.CASCADE, blank=True, null=True, default=None)
-    is_active = models.BooleanField(default=True)
-    created = models.DateTimeField(auto_now_add=True, auto_now=False)
-    update = models.DateTimeField(auto_now=True, auto_now_add=False)
-
-    def __str__(self):
-        return "%s" % self.product.name
-
-    class Meta:
-        verbose_name = 'Товар'
-        verbose_name_plural = 'Товары'
