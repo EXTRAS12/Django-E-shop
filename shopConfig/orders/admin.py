@@ -21,7 +21,12 @@ class ProductInOrderAdmin(admin.ModelAdmin):
     list_display = ['order', 'nmb', 'price_per_item', 'total_price', 'product', 'is_active', 'created', 'update']
 
 
+class ProductInBasketAdmin(admin.ModelAdmin):
+    list_display = ['order', 'nmb', 'price_per_item', 'total_price', 'product', 'is_active', 'created', 'update']
+
+
 admin.site.register(Status, StatusAdmin)
 admin.site.register(Order, OrderAdmin)
 admin.site.register(ProductInOrder, ProductInOrderAdmin)
+admin.site.register(ProductInBasket, ProductInBasketAdmin)
 
