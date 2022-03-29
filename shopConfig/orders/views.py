@@ -47,10 +47,9 @@ def basket_adding(request):
 def checkout(request):
     session_key = request.session.session_key
     products_in_basket = ProductInBasket.objects.filter(session_key=session_key, is_active=True, order__isnull=True)
-    print (products_in_basket)
+    print(products_in_basket)
     for item in products_in_basket:
         print(item.order)
-
 
     form = CheckoutContactForm(request.POST or None)
     if request.POST:
@@ -74,9 +73,9 @@ def checkout(request):
                     product_in_basket.order = order
                     product_in_basket.save(force_update=True)
 
-                    ProductInOrder.objects.create(product=product_in_basket.product, nmb = product_in_basket.nmb,
+                    ProductInOrder.objects.create(product=product_in_basket.product, nmb=product_in_basket.nmb,
                                                   price_per_item=product_in_basket.price_per_item,
-                                                  total_price = product_in_basket.total_price,
+                                                  total_price=product_in_basket.total_price,
                                                   order=order)
 
             return HttpResponseRedirect(request.META['HTTP_REFERER'])

@@ -19,8 +19,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_summernote',
+
     'catalog',
     'orders',
+    'management_area',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +53,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'orders.context_processors.getting_basket_info',
+                'management_area.context_processors.getting_privacy_policy',
             ],
         },
     },
