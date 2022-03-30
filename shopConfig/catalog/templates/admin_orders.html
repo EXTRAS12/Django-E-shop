@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-10">
+      <h3>Заказы</h3>
+      <table id="orders_table" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <td>Имя</td>
+                <td>Телефон</td>
+                <td>Количество товаров</td>
+                <td>Товары в заказе</td>
+
+            </tr>
+        </thead>
+         <tbody>
+         {% for item in orders %}
+            <tr>
+                <td>{{ item.customer_name }}</td>
+                <td>{{ item.customer_phone }}</td>
+                <td>{{ item.customer_nmb }}</td>
+                <td>
+                  <ul>
+                    {% for product in item.products %}
+                    <li>
+                      {{ product.product__name }} : {{ product.nmb }}шт. по {{ product.price_per_item }}
+                      = {{ product.total_price }}
+                    </li>
+                    {% endfor %}
+                  </ul>
+                </td>
+            </tr>
+        {% endfor %}
+         </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block js_stuff %}
+
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('#orders_table').DataTable(
+    {
+      "order": [[0, "asc" ]],
+      "pageLength": 10,
+    }
+    );
+});
+</script>
+{% endblock js_stuff %}

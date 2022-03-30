@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from .models import *
 from django.shortcuts import render
@@ -82,3 +83,32 @@ def checkout(request):
         else:
             print("no")
     return render(request, 'checkout.html', locals())
+
+
+def merging_dicts(l1, l2, key1, key2):
+    merged = {}
+    for item in l1:
+        merged[item[key1]] = item
+    for item in l2:
+        try:
+            if 'products' in merged[item[key2]]:
+                merged[item[key2]]['products'].append(item)
+            else:
+                merged[item[key2]]['products'] = [item]
+        except Exception as e:
+            return True
+    orders = [val for (_, val) in merged.items()]
+    return orders
+
+
+def admin_orders(request):
+    user = request.user
+
+    orders = Order.objects.all().annotate(products_nmb=Count('productinorder')).values()
+    order_ids = [order['id'] for order in orders]
+
+    products_in_order = ProductInOrder.objects.filter(is_active=True, order_id__in=order_ids)\
+        .values('order_id', 'product__name', 'nmb', 'price_per_item', 'total_price')
+
+    orders = merging_dicts(list(orders), list(products_in_order), 'id', 'order_id')
+    return render(request, 'admin_orders.html', locals())
